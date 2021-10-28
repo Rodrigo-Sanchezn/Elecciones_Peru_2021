@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 
-#Probando de nuevo
+#Probando de nuevo AHORA SI
 hola = "Hola como estas"
 
 # El path para abrir el driver de Chrome (ya arreglado con el método SERVICE)
