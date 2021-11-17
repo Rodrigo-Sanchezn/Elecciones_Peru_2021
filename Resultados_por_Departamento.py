@@ -25,7 +25,7 @@ for dep in deps:
     search = driver.find_element(By.ID, "select_departamento") # Busca el pop-up para poner los departamentos
     search.send_keys(dep) # Manda los departamentos que están guardados en la lista
     time.sleep(2)
-    total = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[3]")
+    total = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[3]") #Halla el total de los votos
     totales.append(total.text)
     proce = driver.find_element(By.ID, "porActasProcesadas")
     procesadas.append(proce.text)
