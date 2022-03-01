@@ -4,10 +4,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 
-#Probando ando
-
-#Caca
-
 # El path para abrir el driver de Chrome (ya arreglado con el método SERVICE)
 s = Service("/Users/rodrigo/Downloads/chromedriver")
 driver = webdriver.Chrome(service=s) # Asigna la ubicación del driver de chrome
