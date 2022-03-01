@@ -4,20 +4,19 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 
-# El path para abrir el driver de Chrome (ya arreglado con el método SERVICE)
-s = Service("/Users/rodrigo/Downloads/chromedriver")
-driver = webdriver.Chrome(service=s) # Asigna la ubicación del driver de chrome
+# El path para abrir el driver de Chrome
+path = "/Users/rodrigosanchez/Selenium/chromedriver"
+driver = webdriver.Chrome(path) # Asigna la ubicación del driver de chrome
 driver.get("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenciales/RePres/P")# Abre la página de la ONPE con los resultados de Perú
 
 time.sleep(3) # CAMBIAR --> se puede cambiar por imlpicitly wait (creo) hasta que aparezcan las opciones
 search = driver.find_element(By.ID, "select_departamento") # Se busca la casilla de opciones donde se elige el departamento
-options = [x for x in search.find_elements(By.TAG_NAME, "option")] # Se encuentra la lista de opciones de dicha casilla encontrada y cada opción se añade a la lista options
+options = search.find_elements(By.TAG_NAME, "option") # Se encuentra la lista de opciones de dicha casilla encontrada y cada opción se añade a la lista options
+options.pop(0)
 
 deps = [] # Se crea una lista vacía llamada deps --> aquí se guardaran los nombres de los departamentos
-for i in range(len(options)):
-    if i != 0: # Se pone esta restricción porque el elemento 0 de la lista de opciones no es el nombre de un departamento, sino es el nombre "-elegir departamento-"
-        search = driver.find_element(By.XPATH, f"//select[@id='select_departamento']/option[{i+1}]") # Para cada i se busca el nombre del departamento asociado al número y se asigna a search
-        deps.append(search.text) # Se appendea en la lista deps el nombre hallado anteriormente --> se usa "search.text" porque los elementos extraídos no están en forma de texto y se tienen que pasar a texto
+for option in options:
+    deps.append(option.text) # Se appendea en la lista deps el nombre hallado anteriormente --> se usa "search.text" porque los elementos extraídos no están en forma de texto y se tienen que pasar a texto
 
 totales, procesadas, contabilizadas, total_kf, total_pc, porcent_kf, porcent_pc, enviadas_JNE, porcent_participacion, porcent_validos = [], [], [], [], [], [], [], [], [], []
 
