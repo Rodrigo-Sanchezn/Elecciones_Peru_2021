@@ -12,7 +12,7 @@ driver.get("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenci
 time.sleep(3) # CAMBIAR --> se puede cambiar por imlpicitly wait (creo) hasta que aparezcan las opciones
 search = driver.find_element(By.ID, "select_departamento") # Se busca la casilla de opciones donde se elige el departamento
 options = search.find_elements(By.TAG_NAME, "option") # Se encuentra la lista de opciones de dicha casilla encontrada y cada opción se añade a la lista options
-options.pop(0)
+options.pop(0) # Elimina la opción 0, que hace referencia a "-elegir departamento-
 
 deps = [] # Se crea una lista vacía llamada deps --> aquí se guardaran los nombres de los departamentos
 for option in options:
