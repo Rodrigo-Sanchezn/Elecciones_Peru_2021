@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
 import time
 
 # El path para abrir el driver de Chrome
@@ -24,8 +25,8 @@ for option in options:
 totales, procesadas, contabilizadas, total_kf, total_pc, porcent_kf, porcent_pc, enviadas_JNE, porcent_participacion, porcent_validos = [], [], [], [], [], [], [], [], [], []
 
 for dep in deps:
-    search = driver.find_element(By.ID, "select_departamento") # Busca el pop-up para poner los departamentos
-    search.send_keys(dep) # Manda los departamentos que están guardados en la lista
+    search = Select(driver.find_element(By.ID, "select_departamento")) # Busca el pop-up para poner los departamentos
+    search.select_by_visible_text(dep) # Manda los departamentos que están guardados en la lista
     time.sleep(2)
     total = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[3]") #Halla el total de los votos
     totales.append(total.text)
