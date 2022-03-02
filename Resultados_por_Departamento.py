@@ -2,6 +2,8 @@ import csv
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 # El path para abrir el driver de Chrome
@@ -9,7 +11,8 @@ path = "/Users/rodrigosanchez/Selenium/chromedriver"
 driver = webdriver.Chrome(path) # Asigna la ubicación del driver de chrome
 driver.get("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenciales/RePres/P")# Abre la página de la ONPE con los resultados de Perú
 
-time.sleep(3) # CAMBIAR --> se puede cambiar por imlpicitly wait (creo) hasta que aparezcan las opciones
+WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "select_departamento"))) # Espera por un máximo de 10 segundos a que aparezca la lista de departamentos
+
 search = driver.find_element(By.ID, "select_departamento") # Se busca la casilla de opciones donde se elige el departamento
 options = search.find_elements(By.TAG_NAME, "option") # Se encuentra la lista de opciones de dicha casilla encontrada y cada opción se añade a la lista options
 options.pop(0) # Elimina la opción 0, que hace referencia a "-elegir departamento-
