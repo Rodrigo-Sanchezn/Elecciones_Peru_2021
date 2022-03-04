@@ -1,10 +1,10 @@
-import csv
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
+import pandas as pd
+import time
 
 # El path para abrir el driver de Chrome
 path = "/Users/rodrigosanchez/Selenium/chromedriver"
@@ -21,82 +21,39 @@ deps = [] # Se crea una lista vacía llamada deps --> aquí se guardaran los nom
 for option in options:
     deps.append(option.text) # Se appendea en la lista deps el nombre hallado anteriormente --> se usa "search.text" porque los elementos extraídos no están en forma de texto y se tienen que pasar a texto
 
-totales, total_kf, total_pc, porcent_kf, porcent_pc, porcent_participacion, porcent_validos = [], [], [], [], [], [], []
+col_names = ["Departamento",
+             "Votos Validos",
+             "Total Fujimori",
+             "Total Castillo",
+             "% Fujimori",
+             "% Castillo",
+             "% Participacion",
+             "% Validos"]
+
+resultados = pd.DataFrame(columns=col_names)
+resultados.to_csv("resultados_por_departamento.csv", index=False)
 
 for dep in deps:
+    data_raw = []
     search = Select(driver.find_element(By.ID, "select_departamento")) # Busca el pop-up para poner los departamentos
     search.select_by_visible_text(dep) # Manda los departamentos que están guardados en la lista
+    data_raw.append(dep)
+    time.sleep(2)
     total = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[3]") #Halla el total de los votos
-    totales.append(total.text)
+    data_raw.append(total.text)
     kf = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[4]/td[4]")
-    total_kf.append(kf.text)
+    data_raw.append(kf.text)
     p_kf = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[4]/td[5]")
-    porcent_kf.append(p_kf.text)
+    data_raw.append(p_kf.text)
     pc = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[3]/td[4]")
-    total_pc.append(pc.text)
+    data_raw.append(pc.text)
     p_pc = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[3]/td[5]")
-    porcent_pc.append(p_pc.text)
+    data_raw.append(p_pc.text)
     part = driver.find_element(By.ID, "porPartCiudadanapor")
-    porcent_participacion.append(part.text)
+    data_raw.append(part.text)
     valid = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[5]")
-    porcent_validos.append(valid.text)
+    data_raw.append(valid.text)
+    data = pd.DataFrame([data_raw])
+    data.to_csv("resultados_por_departamento.csv", mode="a", index=False, header=False)
 
-with open("/Users/rodrigo/Desktop/elecciones_2021/General/resultados_generales.csv", "w", encoding="UTF8", newline="") as f:
-    writer = csv.writer(f)
-
-    writer.writerow(["DEPARTAMENTO", "ACTAS PROCESADAS", "ACTAS CONTABILIZADAS", "VOTOS VALIDOS", "TOTAL KF", "TOTAL PC", "% KF", "% PC", "ACTAS JNE", "% PARTICIPACION", "% VALIDOS"])
-    data = []
-    for i in range(len(deps)):
-        data_raw = list()
-        data_raw.append(deps[i])
-        data_raw.append(totales[i])
-        data_raw.append(total_kf[i])
-        data_raw.append(total_pc[i])
-        data_raw.append(porcent_kf[i])
-        data_raw.append(porcent_pc[i])
-        data_raw.append(porcent_participacion[i])
-        data_raw.append(porcent_validos[i])
-        data.append(data_raw)
-    writer.writerows(data)
-
-driver.get("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenciales/RePres/P")
-WebDriverWait(driver, 10).until(EC.url_matches("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenciales/RePres/P"))
-total = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[3]")
-kf = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[4]/td[4]")
-p_kf = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[4]/td[5]")
-pc = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[3]/td[4]")
-p_pc = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[3]/td[5]")
-part = driver.find_element(By.ID, "porPartCiudadanapor")
-valid = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[5]")
-
-with open("/Users/rodrigo/Desktop/elecciones_2021/General/resultados_generales.csv", "a", encoding="UTF8") as f:
-    writer = csv.writer(f)
-    writer.writerows([["", "", "", "", "", "", "", ""], ["PERU", total.text, kf.text, pc.text, p_kf.text, p_pc.text, part.text, valid.text]])
-
-driver.get("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenciales/RePres/E")
-WebDriverWait(driver, 10).until(EC.url_matches("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenciales/RePres/E"))
-total = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[3]")
-kf = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[4]/td[4]")
-p_kf = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[4]/td[5]")
-pc = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[3]/td[4]")
-p_pc = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[3]/td[5]")
-part = driver.find_element(By.ID, "porPartCiudadanapor")
-valid = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[5]")
-
-with open("/Users/rodrigo/Desktop/elecciones_2021/General/resultados_generales.csv", "a", encoding="UTF8") as f:
-    writer = csv.writer(f)
-    writer.writerows([["", "", "", "", "", "", "", ""], ["EXTRANJERO", total.text, kf.text, pc.text, p_kf.text, p_pc.text, part.text, valid.text]])
-
-driver.get("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenciales/RePres/T")
-WebDriverWait(driver, 10).until(EC.url_matches("https://resultadoshistorico.onpe.gob.pe/SEP2021/EleccionesPresidenciales/RePres/T"))
-total = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[3]")
-kf = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[4]/td[4]")
-p_kf = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[4]/td[5]")
-pc = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[3]/td[4]")
-p_pc = driver.find_element(By.XPATH, "//table[@class='main-table table table-striped tabla_resultado']/tr[3]/td[5]")
-part = driver.find_element(By.ID, "porPartCiudadanapor")
-valid = driver.find_element(By.XPATH, "//tr[@class='datos_voto']/td[5]")
-
-with open("/Users/rodrigo/Desktop/elecciones_2021/General/resultados_generales.csv", "a", encoding="UTF8") as f:
-    writer = csv.writer(f)
-    writer.writerows([["", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", ""], ["TOTAL", total.text, kf.text, pc.text, p_kf.text, p_pc.text, part.text, valid.text]])
+driver.quit()
