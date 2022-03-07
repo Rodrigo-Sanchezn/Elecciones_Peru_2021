@@ -19,7 +19,7 @@ options.pop(0) # Elimina la opción 0, que hace referencia a "-elegir departamen
 
 deps = [] # Se crea una lista vacía llamada deps --> aquí se guardaran los nombres de los departamentos
 for option in options:
-    deps.append(option.text) # Se appendea en la lista deps el nombre hallado anteriormente --> se usa "search.text" porque los elementos extraídos no están en forma de texto y se tienen que pasar a texto
+    deps.append(option.text) # Se appendea en la lista deps el nombre hallado anteriormente --> se usa "option.text" porque los elementos extraídos no están en forma de texto y se tienen que pasar a texto
 
 col_names = ["Departamento",
              "Votos Validos",
@@ -30,8 +30,8 @@ col_names = ["Departamento",
              "% Participacion",
              "% Validos"]
 
-resultados = pd.DataFrame(columns=col_names)
-resultados.to_csv("resultados_por_departamento.csv", index=False)
+resultados = pd.DataFrame(columns=col_names) # Se crea un data frame en Pandas con los títulos de la futura tabla (títulos mencionados en col_names)
+resultados.to_csv("resultados_por_departamento.csv", index=False) # Se pasa el data frame creado en la línea 33 a un archivo CSV
 
 for dep in deps:
     data_raw = []
